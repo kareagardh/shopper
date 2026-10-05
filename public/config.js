@@ -4,8 +4,8 @@
 // =====================================================================
 window.LOPPIS_CONFIG = {
   // Supabase → Project Settings → API
-  supabaseUrl: 'https://DITT-PROJEKT.supabase.co',
-  supabaseAnonKey: 'DIN-ANON-PUBLIC-NYCKEL',
+  supabaseUrl: 'https://dnsmcbnkzixjkwuxjmad.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuc21jYm5reml4amt3dXhqbWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDIyNDIsImV4cCI6MjEwNjc3ODI0Mn0.TKcMEv8QlSHNwckI2UgbewYiANWl1YBtg4Kb-tAmb-Y',
 
   // Föreningens Swish Företag-nummer, bara siffror
   swishNumber: '1234567890',
