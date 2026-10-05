@@ -1,0 +1,14 @@
+{
+  "name": "Rydebäcks Barnloppis",
+  "short_name": "Barnloppis",
+  "start_url": "./", "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4F7FA",
+  "theme_color": "#1F7A5C",
+  "lang": "sv",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

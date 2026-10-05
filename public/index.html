@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F7A5C">
+<title>Rydebäcks Barnloppis</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- Handla -->
+  <div id="scr-shop" style="display:contents">
+    <header class="app-h">
+      <div class="brand"><span id="storeName">Rydebäcks Barnloppis</span><small id="dayLabel">Din varukorg</small></div>
+      <span class="chip" id="codeChip" title="Din kundkod"></span>
+    </header>
+    <form class="entry" id="addForm" novalidate autocomplete="off">
+      <div class="fields">
+        <div class="field">
+          <label for="inSeller">Säljare nr</label>
+          <input id="inSeller" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="1–999" enterkeyhint="next">
+        </div>
+        <div class="field">
+          <label for="inPrice">Pris</label>
+          <div class="suffix"><input id="inPrice" inputmode="numeric" pattern="[0-9]*" maxlength="5" placeholder="0" enterkeyhint="done"><span>kr</span></div>
+        </div>
+      </div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn btn-primary" type="submit">Lägg till vara</button>
+    </form>
+    <div class="listbar">
+      <span id="listCount">0 varor</span>
+      <div class="seg" role="group" aria-label="Sortera">
+        <button type="button" id="sortTime" aria-pressed="true">Senaste</button>
+        <button type="button" id="sortSeller" aria-pressed="false">Säljare</button>
+      </div>
+    </div>
+    <div class="items" id="items"></div>
+    <div class="paybar">
+      <div><div class="sum" id="sum">0 kr</div><div class="small" id="cnt">Inga varor än</div></div>
+      <button class="btn btn-primary" id="goPay" disabled>Betala</button>
+    </div>
+  </div>
+
+  <!-- Betala -->
+  <div id="scr-pay" hidden style="flex:1;display:flex;flex-direction:column;min-height:0">
+    <header class="app-h">
+      <div class="brand">Betala<small id="payStore"></small></div>
+      <span class="chip" id="codeChip2"></span>
+    </header>
+    <div class="pane">
+      <button class="link" id="backShop">‹ Tillbaka till varukorgen</button>
+      <div class="bigsum"><div class="small">Att betala</div><div class="v" id="paySum">0 kr</div><div class="small" id="payCnt"></div></div>
+      <a class="btn btn-primary" id="openSwish" href="#">Öppna Swish</a>
+      <p class="small" style="margin:0;text-align:center">Öppnas inte Swish? Swisha <b id="payTotal2"></b> till <b class="mono" id="swishNr"></b> med meddelandet <b class="mono" id="payMsg"></b>.</p>
+      <div class="card qrcard">
+        <div class="small" style="font-weight:600">Visa för volontären vid utgången</div>
+        <div class="qrbox" id="qr" aria-label="QR-kod med din varukorg"></div>
+        <div class="codebig" id="payCode"></div>
+        <ol class="steps">
+          <li>Betala i Swish</li>
+          <li>Visa koden och Swish-kvittot om volontären ber om det</li>
+          <li>Tryck <b>Klart</b></li>
+        </ol>
+      </div>
+      <button class="btn btn-primary" id="klart">Klart, jag har betalat</button>
+    </div>
+  </div>
+
+  <!-- Klart -->
+  <div id="scr-done" hidden style="flex:1;display:flex;flex-direction:column;min-height:0">
+    <div class="pane">
+      <div class="check" aria-hidden="true">✓</div>
+      <h2 style="text-align:center">Tack för ditt köp!</h2>
+      <div class="card qrcard">
+        <div class="codebig" id="dCode"></div>
+        <div class="bigsum" style="border:0;padding:0"><div class="v" id="dSum"></div></div>
+        <div id="dState" class="note"></div>
+      </div>
+      <button class="btn btn-ghost" id="newCart">Starta nytt köp</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="klartAsk" hidden>
+  <div class="sheet">
+    <h2>Har du betalat <span id="askSum"></span> i Swish?</h2>
+    <p class="small" style="margin:0">Köpet registreras hos loppisen och varukorgen töms.</p>
+    <button class="btn btn-primary" id="klartYes">Ja, jag har betalat</button>
+    <button class="btn btn-ghost" id="klartNo">Inte än</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden><span id="toastMsg"></span><button type="button" id="undo">Ångra</button></div>
+
+<script src="config.js"></script>
+<script src="js/common.js"></script>
+<script src="vendor/qrcode-generator.js"></script>
+<script src="js/kund.js"></script>
+</body>
+</html>

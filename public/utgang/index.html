@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#13233A">
+<title>Utgången · Rydebäcks Barnloppis</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/app.css">
+<style>
+  .reader{border-radius:16px;overflow:hidden;background:#000;min-height:260px}
+  .reader video{width:100%!important;height:auto!important}
+  .ilist{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+  .ichip{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:6px 8px 6px 6px;font-weight:600;font-variant-numeric:tabular-nums;background:var(--surface)}
+  .paystate{border-radius:14px;padding:14px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-weight:700}
+  .paystate.wait{background:var(--warn-soft);color:var(--warn)}
+  .paystate.paid{background:var(--accent);color:var(--accent-ink)}
+  .paystate .big{font-family:var(--f-display);font-size:2rem;margin-left:auto;font-variant-numeric:tabular-nums}
+  .checklist{margin:0;padding-left:1.3em;color:var(--muted)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .qitem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:12px 14px;border:0;border-bottom:1px solid var(--line);background:var(--surface);text-align:left;cursor:pointer;width:100%}
+  .qitem .c{font-family:var(--f-mono);font-weight:700}
+  .qitem .s{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .list{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .syncrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .syncrow .btn{width:auto;padding:10px 14px;font-size:.95rem}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Inloggning -->
+  <div id="vLogin" style="flex:1;display:flex;flex-direction:column;min-height:0">
+    <header class="app-h"><div class="brand">Utgången<small id="store1"></small></div></header>
+    <form class="pane" id="loginForm" novalidate autocomplete="off">
+      <p style="margin:0">Logga in med dagens stationskod. Du får den av loppisens admin.</p>
+      <div class="field"><label for="inCode">Stationskod</label><input id="inCode" autocapitalize="off" autocorrect="off" spellcheck="false" style="font-size:1.3rem"></div>
+      <div class="field"><label for="inStation">Stationsnummer</label>
+        <select id="inStation" style="font-size:1.3rem"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
+      </div>
+      <div class="err" id="loginErr" role="alert"></div>
+      <div class="note warn" id="leftover" hidden></div>
+      <button class="btn btn-primary" type="submit" id="loginBtn">Starta station</button>
+      <p class="small">Inloggningen kräver nät. Därefter fungerar stationen utan nät och skickar kontrollerade köp när det finns nät.</p>
+    </form>
+  </div>
+
+  <!-- Station -->
+  <div id="vMain" hidden style="flex:1;display:flex;flex-direction:column;min-height:0">
+    <header class="app-h">
+      <div class="brand" id="stTitle">Station<small id="stDay"></small></div>
+      <span class="chip" id="syncChip"></span>
+    </header>
+    <div class="pane">
+      <button class="btn btn-primary" id="scanBtn" style="font-size:1.2rem;padding:18px">Skanna kund</button>
+
+      <div id="scanBox" hidden class="card">
+        <div id="reader" class="reader"></div>
+        <div class="err" id="scanErr"></div>
+        <button class="btn btn-ghost" id="scanCancel">Avbryt</button>
+      </div>
+
+      <div id="detail" hidden class="card"></div>
+
+      <div class="card">
+        <div class="syncrow"><span id="syncText" class="small"></span><button class="btn btn-ghost" id="syncBtn">Synka nu</button></div>
+      </div>
+
+      <div>
+        <div class="small" style="font-weight:600;margin-bottom:6px">Kontrollerade på den här stationen</div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <button class="btn btn-ghost" id="closeBtn">Stäng station</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="closeSheet" hidden>
+  <div class="sheet">
+    <h2 id="closeTitle">Stäng station</h2>
+    <p id="closeText" style="margin:0"></p>
+    <button class="btn btn-primary" id="closeRetry">Försök synka igen</button>
+    <button class="btn btn-danger" id="closeAnyway">Stäng ändå (köpen sparas i telefonen)</button>
+    <button class="btn btn-ghost" id="closeCancel">Fortsätt arbeta</button>
+  </div>
+</div>
+
+<script src="../config.js"></script>
+<script src="../js/common.js"></script>
+<script src="../vendor/html5-qrcode.min.js"></script>
+<script src="../js/utgang.js"></script>
+</body>
+</html>

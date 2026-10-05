@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Admin · Rydebäcks Barnloppis</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/app.css">
+<style>
+  body{padding-inline:16px}
+  .wrap{max-width:1180px;margin:0 auto;padding-block:20px 60px;display:flex;flex-direction:column;gap:16px}
+  .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+  .ctl{display:flex;flex-direction:column;gap:3px}
+  .ctl label{font-size:.75rem;font-weight:600;color:var(--muted)}
+  .ctl input,.ctl select{padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:600}
+  .ctl input[type=number]{width:90px}
+  .row-ctl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px}
+  .b{font-weight:700;border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:var(--accent-ink);cursor:pointer;white-space:nowrap}
+  .b.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .b.small{padding:6px 10px;font-size:.85rem}
+  .b.danger{background:var(--danger);color:#fff}
+  .b[disabled]{opacity:.5;cursor:wait}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .panel-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+  .panel-b{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+  .stats{display:flex;flex-wrap:wrap;gap:22px;padding:14px 16px}
+  .stat .v{font-family:var(--f-display);font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .tabs{display:flex;gap:4px;padding:8px 12px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+  .tabs button{font-weight:600;border:0;background:transparent;color:var(--muted);padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+  .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .tw{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.9rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:top}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface);position:sticky;top:0}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+  tfoot td{font-weight:700;background:var(--bg)}
+  .minflag{font-size:.7rem;font-weight:700;color:var(--warn);margin-left:6px}
+  .more{padding:12px 16px}
+  .itemsline{white-space:normal;color:var(--muted);font-size:.85rem;max-width:520px}
+  .msg{padding:10px 14px;border-radius:10px;font-size:.92rem}
+  .msg.ok{background:var(--accent-soft)} .msg.bad{background:var(--danger-soft)}
+  .login{max-width:380px;margin:12vh auto 0}
+</style>
+</head>
+<body>
+
+<div class="wrap login" id="vLogin">
+  <div class="panel">
+    <div class="panel-h"><div class="brand">Admin<small id="store1"></small></div></div>
+    <form class="panel-b" id="loginForm">
+      <div class="ctl"><label for="pw">Adminlösenord</label><input id="pw" type="password" autocomplete="current-password"></div>
+      <div class="err" id="loginErr" role="alert"></div>
+      <button class="b" type="submit" id="loginBtn">Logga in</button>
+    </form>
+  </div>
+</div>
+
+<div class="wrap" id="vMain" hidden>
+  <div class="top">
+    <div class="brand" style="font-size:1.4rem">Admin<small id="store2"></small></div>
+    <div class="row-ctl">
+      <div class="ctl"><label for="evSel">Loppisdag</label><select id="evSel"></select></div>
+      <button class="b ghost" id="refreshBtn">Hämta senaste</button>
+      <button class="b" id="exportBtn">Exportera till Excel</button>
+      <button class="b ghost" id="logoutBtn">Logga ut</button>
+    </div>
+  </div>
+  <div class="msg" id="msg" hidden></div>
+
+  <div class="panel">
+    <div class="panel-h">
+      <div><b>Loppisdagar</b> <span class="small" id="evSummary"></span></div>
+      <div class="row-ctl"><button class="b ghost small" id="newEvBtn">Ny loppisdag</button><button class="b ghost small" id="editEvBtn">Ändra vald dag</button></div>
+    </div>
+    <form class="panel-b" id="evForm" hidden novalidate>
+      <div class="row-ctl">
+        <div class="ctl"><label for="fDate">Datum</label><input id="fDate" type="date" required></div>
+        <div class="ctl"><label for="fName">Namn</label><input id="fName" placeholder="t.ex. Höstloppis"></div>
+        <div class="ctl"><label for="fPct">Provision %</label><input id="fPct" type="number" min="0" max="100" step="1"></div>
+        <div class="ctl"><label for="fMin">Minst kr per säljare och dag</label><input id="fMin" type="number" min="0" step="1"></div>
+        <div class="ctl"><label for="fCode">Stationskod</label><input id="fCode" autocomplete="off" placeholder="oförändrad"></div>
+        <label class="ctl" style="flex-direction:row;align-items:center;gap:6px;font-weight:600"><input id="fActive" type="checkbox" style="width:20px;height:20px"> Aktiv (dagens loppis)</label>
+      </div>
+      <p class="small" style="margin:0">Kunder registreras på den aktiva loppisdagen, och stationer loggar in med dess stationskod. Bara en dag kan vara aktiv. Provisionen räknas per säljare och dag: procentsatsen, men minst minimibeloppet, och aldrig mer än säljarens försäljning.</p>
+      <div class="row-ctl"><button class="b" type="submit" id="evSave">Spara</button><button class="b ghost" type="button" id="evCancel">Avbryt</button></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="stats">
+      <div class="stat"><div class="v" id="sCarts">0</div><div class="l">Registrerade köp</div></div>
+      <div class="stat"><div class="v" id="sUnchecked">0</div><div class="l">Utan volontärkontroll</div></div>
+      <div class="stat"><div class="v" id="sDiff">0</div><div class="l">Summa avviker</div></div>
+      <div class="stat"><div class="v" id="sSales">0 kr</div><div class="l">Försäljning</div></div>
+      <div class="stat"><div class="v" id="sComm">0 kr</div><div class="l">Provision</div></div>
+      <div class="stat"><div class="v" id="sPayout">0 kr</div><div class="l">Att betala ut</div></div>
+      <div class="stat"><div class="v" id="sSellers">0</div><div class="l">Säljare</div></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="sellers" aria-selected="true">Per säljare</button>
+      <button role="tab" data-tab="carts" aria-selected="false">Köp</button>
+      <button role="tab" data-tab="items" aria-selected="false">Alla varor</button>
+      <button role="tab" data-tab="stations" aria-selected="false">Stationer</button>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="tw"><table id="tbl"></table></div>
+    <div class="more" id="more" hidden><button class="b ghost small" id="moreBtn">Visa fler</button></div>
+  </div>
+  <p class="small" id="fetched"></p>
+</div>
+
+<script src="../config.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>
